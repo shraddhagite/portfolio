@@ -3,6 +3,7 @@
 
 ### macOS ###
 # General
+.idea
 .DS_Store
 .AppleDouble
 .LSOverride
@@ -44,6 +45,8 @@ logs
 dist
 node_modules
 bower_components
+.parcel-cache
+package-lock.json
 
 *.sublime*
 
