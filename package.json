@@ -1,12 +1,12 @@
 {
   "name": "portfolio",
-  "source": "index.html",
+  "source": "public/index.html",
   "version": "1.0.0",
   "description": "A simple portfolio website",
   "scripts": {
     "start": "parcel",
-    "build": "npx tailwindcss -i ./css/input.css -o ./css/output.css && parcel build",
-    "clean": "rm -rf dist && rm -rf node_modules",
+    "build": "npx tailwindcss -i src/input.css -o public/portfolio.css && parcel build public/index.html",
+    "clean": "rm -rf dist && rm -rf node_modules && rm -rf .parcel-cache",
     "rebuild": "npm run clean && npm install && npm run build"
   },
   "keywords": [
