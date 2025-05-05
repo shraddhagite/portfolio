@@ -1,14 +1,71 @@
-import React, {useState} from 'react';
-import {Github, Linkedin, Mail, FileText, ExternalLink, Menu, X, ChevronRight} from 'lucide-react';
-import personalInfo from "../public/assets/personalinfo.json";
-import projects from "../public/assets/projects.json";
-import blogs from "../public/assets/blogs.json";
-import skills from "../public/assets/skills.json";
-import work from "../public/assets/work.json";
+import React, { useState, useEffect } from 'react';
+import { Github, Linkedin, Mail, ExternalLink, Menu, X, ChevronRight } from 'lucide-react';
+
+const GITHUB_BASE_URL = "https://dkexception.github.io/public";
 
 const Portfolio = () => {
 
+    const [personalInfo, setPersonalInfo] = useState(null);
+    const [projects, setProjects] = useState([]);
+    const [blogs, setBlogs] = useState([]);
+    const [skills, setSkills] = useState([]);
+    const [work, setWork] = useState([]);
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    useEffect(() => {
+        const fetchAllJSON = async () => {
+            try {
+                const [infoRes, projectsRes, blogsRes, skillsRes, workRes] = await Promise.all([
+                    fetch(`${GITHUB_BASE_URL}/personalinfo.json`),
+                    fetch(`${GITHUB_BASE_URL}/projects.json`),
+                    fetch(`${GITHUB_BASE_URL}/blogs.json`),
+                    fetch(`${GITHUB_BASE_URL}/skills.json`),
+                    fetch(`${GITHUB_BASE_URL}/work.json`)
+                ]);
+
+                const [info, projects, blogs, skills, work] = await Promise.all([
+                    infoRes.json(),
+                    projectsRes.json(),
+                    blogsRes.json(),
+                    skillsRes.json(),
+                    workRes.json()
+                ]);
+
+                setPersonalInfo(info);
+                setProjects(projects);
+                setBlogs(blogs);
+                setSkills(skills);
+                setWork(work);
+                setError(false);
+            } catch (err) {
+                setError(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAllJSON();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex justify-center items-center bg-gray-100">
+                <div className="text-lg text-gray-700 animate-pulse">Fetching data...</div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen flex justify-center items-center bg-gray-100">
+                <div className="text-lg text-red-500">Error fetching data. Please try again later!</div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -26,7 +83,7 @@ const Portfolio = () => {
                                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                                 className="text-gray-500 hover:text-gray-700"
                             >
-                                {isMenuOpen ? <X size={24}/> : <Menu size={24}/>}
+                                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                             </button>
                         </div>
 
@@ -38,16 +95,16 @@ const Portfolio = () => {
                             <a href="#skills" className="text-gray-700 hover:text-blue-600">Skills</a>
                             <div className="flex space-x-4">
                                 <a href={personalInfo.socialDetails.github} target="_blank"
-                                   className="text-gray-500 hover:text-gray-700">
-                                    <Github size={20}/>
+                                    className="text-gray-500 hover:text-gray-700">
+                                    <Github size={20} />
                                 </a>
                                 <a href={personalInfo.socialDetails.linkedin} target="_blank"
-                                   className="text-gray-500 hover:text-gray-700">
-                                    <Linkedin size={20}/>
+                                    className="text-gray-500 hover:text-gray-700">
+                                    <Linkedin size={20} />
                                 </a>
                                 <a href={personalInfo.socialDetails.mail} target="_blank"
-                                   className="text-gray-500 hover:text-gray-700">
-                                    <Mail size={20}/>
+                                    className="text-gray-500 hover:text-gray-700">
+                                    <Mail size={20} />
                                 </a>
                             </div>
                         </div>
@@ -59,7 +116,7 @@ const Portfolio = () => {
                         <div className="px-2 pt-2 pb-3 space-y-1">
                             <a href="#about" className="block px-3 py-2 text-gray-700 hover:bg-gray-50">About</a>
                             <a href="#experience"
-                               className="block px-3 py-2 text-gray-700 hover:bg-gray-50">Experience</a>
+                                className="block px-3 py-2 text-gray-700 hover:bg-gray-50">Experience</a>
                             <a href="#projects" className="block px-3 py-2 text-gray-700 hover:bg-gray-50">Projects</a>
                             <a href="#blog" className="block px-3 py-2 text-gray-700 hover:bg-gray-50">Blog</a>
                             <a href="#skills" className="block px-3 py-2 text-gray-700 hover:bg-gray-50">Skills</a>
@@ -104,14 +161,14 @@ const Portfolio = () => {
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                         {projects.map((project, index) => (
                             <div key={index}
-                                 className="bg-gray-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+                                className="bg-gray-50 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
                                 <h3 className="text-xl font-semibold text-gray-900">{project.title}</h3>
                                 <p className="text-sm text-gray-500 mt-1">{project.period}</p>
                                 <p className="mt-4 text-gray-600">{project.description}</p>
                                 <div className="mt-4 flex flex-wrap gap-2">
                                     {project.highlights.map((highlight, i) => (
                                         <span key={i}
-                                              className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
+                                            className="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full">
                                             {highlight}
                                         </span>
                                     ))}
@@ -129,7 +186,7 @@ const Portfolio = () => {
                     <div className="space-y-8">
                         {work.map((job, index) => (
                             <div key={index}
-                                 className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow mt-8">
+                                className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow mt-8">
                                 <div className="flex flex-wrap justify-between items-start gap-4">
                                     <div>
                                         <h3 className="text-xl font-semibold text-gray-900">{job.role}</h3>
@@ -174,12 +231,12 @@ const Portfolio = () => {
                                         <h3 className="text-xl font-semibold text-gray-900">{post.title}</h3>
                                         <p className="text-sm text-gray-500 mt-1">{post.date}</p>
                                     </div>
-                                    <ExternalLink className="text-gray-400" size={20}/>
+                                    <ExternalLink className="text-gray-400" size={20} />
                                 </div>
                                 <p className="mt-4 text-gray-600">{post.description}</p>
                                 <div className="mt-4 flex items-center text-blue-600 hover:text-blue-700">
                                     <span className="text-sm font-medium">Read article</span>
-                                    <ChevronRight size={16} className="ml-1"/>
+                                    <ChevronRight size={16} className="ml-1" />
                                 </div>
                             </a>
                         ))}
@@ -206,24 +263,24 @@ const Portfolio = () => {
                 <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-center space-x-6">
                         <a href={personalInfo.socialDetails.github} target="_blank"
-                           className="text-gray-400 hover:text-gray-500">
-                            <Github size={20}/>
+                            className="text-gray-400 hover:text-gray-500">
+                            <Github size={20} />
                         </a>
                         <a href={personalInfo.socialDetails.linkedin} target="_blank"
-                           className="text-gray-400 hover:text-gray-500">
-                            <Linkedin size={20}/>
+                            className="text-gray-400 hover:text-gray-500">
+                            <Linkedin size={20} />
                         </a>
                         <a href={personalInfo.socialDetails.mail} target="_blank"
-                           className="text-gray-400 hover:text-gray-500">
-                            <Mail size={20}/>
+                            className="text-gray-400 hover:text-gray-500">
+                            <Mail size={20} />
                         </a>
                     </div>
                     <p className="mt-4 text-center text-gray-500">
                         © 2025 {personalInfo.name}. All rights reserved | Built with <span
-                        className="text-red-500">♥</span> with the help of <a className="underline text-[#DA7756]"
-                                                                              target="_blank" href="https://claude.ai">Claude
-                        AI</a> | <a className="underline hover:text-blue-600" target="_blank"
-                                    href={personalInfo.portfolioSourceCode}>&lt;Source Code/&gt;</a>
+                            className="text-red-500">♥</span> with the help of <a className="underline text-[#DA7756]"
+                                target="_blank" href="https://claude.ai">Claude
+                            AI</a> | <a className="underline hover:text-blue-600" target="_blank"
+                                href={personalInfo.portfolioSourceCode}>&lt;Source Code/&gt;</a>
                     </p>
                 </div>
             </footer>
