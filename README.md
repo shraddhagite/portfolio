@@ -6,7 +6,7 @@ help of [Claude AI](https://claude.ai).
 
 ## Deployed Website
 
-The website is deployed on [My Github Page](https://dkexception.github.io/).
+The website is deployed on [My Github Page](https://shraddhagite.github.io/).
 
 ## Features
 
